@@ -1,9 +1,11 @@
 import App, { Container } from 'next/app'
 import 'antd/dist/antd.css'
 import React from 'react'
+import { Provider } from 'react-redux'
 import Router from 'next/router'
 import Layout from '../components/Layout'
 import PageLoading from '../components/PageLoading'
+import withRedux from '../lib/with-redux-app'
 
 class MyApp extends App {
   // 自定义App组件必须要做的步骤——重写getInitialProps方法，App组件的getInitialProps比较特殊，能拿到一些额外的参数
@@ -55,17 +57,19 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps } = this.props
+    const { Component, pageProps, reduxStore } = this.props
     return (
       <Container>
+        <Provider store={reduxStore}>
           <Layout>
             {this.state.loading && <PageLoading />}
             {/* 把pageProps解构后传递给组件 */}
             <Component {...pageProps} />
           </Layout>
+        </Provider>
       </Container>
     )
   }
 }
 
-export default MyApp
+export default withRedux(MyApp)
